@@ -12,7 +12,7 @@ func main() {
 	api := rest.NewApi()
 	api.Use(rest.DefaultDevStack...)
 	router, err := rest.MakeRouter(
-		rest.Get("/repos/:lang", GetReposLang),
+		rest.Get("/repos/:level/:lang", GetReposLang),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -34,7 +34,8 @@ type Repos struct {
 
 
 func GetReposLang(w rest.ResponseWriter, r *rest.Request) {
-	code := r.PathParam("lang")
+	code := r.PathParam("lang") // Language Code
+	level := r.PathParam("level") // Level of Information 1: all, 2 only basic struct
 	trend := trending.NewTrending()
 
 	// Show projects of today
@@ -44,7 +45,12 @@ func GetReposLang(w rest.ResponseWriter, r *rest.Request) {
 		rest.NotFound(w, r)
 		return
 	}
-	w.WriteJson(projects)
+	if (level == "1") {
+		w.WriteJson(projects)
+	} else {
+		w.WriteJson(projects)
+	}
+
 }
 
 
